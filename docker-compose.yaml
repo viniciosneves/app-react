@@ -2,8 +2,8 @@ version: '3.8'
 services:
   nginx:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: . 
+      dockerfile: Dockerfile 
     ports:
-      - "80:80"
+      - "8042:80" 
     command: ["/bin/sh", "-c", "nginx -g 'daemon off;'"]
