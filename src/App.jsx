@@ -1,33 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react"
+import Button from "./components/Button"
+import Courses from "./components/Courses"
+import PaginationContainer from "./components/PaginationContainer"
+import EmptyState from "./components/EmptyState"
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [page, setPage] = useState(1)
+  const [paginatedData, setPaginatedData] = useState({
+    count: 0,
+    next: 0,
+    previous: 0,
+    results: []
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      const response = await fetch(`${import.meta.env.VITE_URL}?page=${page}`)
+      const data = await response.json()
+      setPaginatedData(data)
+    }
+
+    fetchData()
+    
+  }, [page])
+
+  const showPrevPage = () => {
+    if (!paginatedData.previous) {
+      return
+    }
+    setPage(oldPage => oldPage - 1)
+  }
+
+  const showNextPage = () => {
+    if (!paginatedData.next) {
+      return
+    }
+    setPage(oldPage => oldPage + 1)
+  }
+
+  if (paginatedData.results.length == 0) {
+    return <EmptyState />
+  }
+  
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        <Courses items={paginatedData.results}/>
+        <PaginationContainer>
+          <img src="/reader.png" alt="" />
+          <div>
+            <Button 
+              disabled={!paginatedData.previous}
+              onClick={showPrevPage}
+            >
+              &lt;&lt; Página anterior
+            </Button>
+            <Button 
+              disabled={!paginatedData.next}
+              onClick={showNextPage}
+            >
+              Próxima página &gt;&gt;
+            </Button>
+          </div>
+        </PaginationContainer>
     </>
   )
 }

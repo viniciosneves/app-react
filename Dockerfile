@@ -1,5 +1,8 @@
 FROM node:latest as builder
 WORKDIR /app
+ARG VITE_URL
+ENV VITE_URL=$VITE_URL
+
 COPY . .
 RUN npm install
 RUN npm run build

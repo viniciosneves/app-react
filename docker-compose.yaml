@@ -4,6 +4,8 @@ services:
     build:
       context: . 
       dockerfile: Dockerfile 
+      args:
+        - VITE_URL=${VITE_URL}
     ports:
       - "8042:80" 
     command: ["/bin/sh", "-c", "nginx -g 'daemon off;'"]
